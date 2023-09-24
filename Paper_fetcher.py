@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 import re
 import glob
 import os
+import PyPDF2
+import re
+
 
 def fetch_paper(arxiv_url):
     try:
@@ -35,7 +38,7 @@ def fetch_paper(arxiv_url):
                         return 'paper_downloads/' + pdf_name
                     else:
                         print(f"Failed to download PDF. Status code: {pdf_response.status_code}")
-                        return
+                        return # later raise error
                 else:
                     print("PDF link not found on the arXiv page.")
                     return
@@ -45,3 +48,42 @@ def fetch_paper(arxiv_url):
                 return
     except:
         print("The given link is invalid")
+
+def get_text(pdf_file_path ):
+    abstract_text = ""
+    introduction_text = ""
+    conclusion_text = ""
+    references_text = ""
+
+    with open(pdf_file_path, 'rb') as pdf_file:
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        num_pages = len(pdf_reader.pages)
+        current_section = None
+
+        for page_num in range(num_pages):
+            page = pdf_reader.pages[page_num]
+            page_text = page.extract_text()
+
+            if re.search(r'\bAbstract\b', page_text, re.IGNORECASE):
+                current_section = "abstract"
+            elif re.search(r'\bIntroduction\b', page_text, re.IGNORECASE):
+                current_section = "introduction"
+            elif re.search(r'\bConclusion\b', page_text, re.IGNORECASE):
+                current_section = "conclusion"
+            elif re.search(r'\bReferences\b', page_text, re.IGNORECASE):
+                current_section = "references"
+
+            if current_section == "abstract":
+                abstract_text += page_text
+            elif current_section == "introduction":
+                introduction_text += page_text
+            elif current_section == "conclusion":
+                conclusion_text += page_text
+            elif current_section == "references":
+                references_text += page_text
+
+    # print("Abstract:-----------------------------------------------------\n", abstract_text)
+    # print("\nIntroduction:-----------------------------------------------------\n", introduction_text)
+    # print("\nConclusion:-------------------------------------------------------\n", conclusion_text)
+    # print("\nReferences:---------------------------------------------\n", references_text)
+    return abstract_text,introduction_text,conclusion_text
