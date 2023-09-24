@@ -34,8 +34,6 @@ with open(pdf_file_path, 'rb') as pdf_file:
             current_section = "abstract"
         elif re.search(r'\bIntroduction\b', page_text, re.IGNORECASE):
             current_section = "introduction"
-        elif re.search(r'\bConclusion\b', page_text, re.IGNORECASE):
-            current_section = "conclusion"
         elif re.search(r'\bReferences\b', page_text, re.IGNORECASE):
             current_section = "references"
 

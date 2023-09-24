@@ -49,41 +49,27 @@ def fetch_paper(arxiv_url):
     except:
         print("The given link is invalid")
 
-def get_text(pdf_file_path ):
-    abstract_text = ""
-    introduction_text = ""
-    conclusion_text = ""
-    references_text = ""
+def get_text(pdf_file_path):
+   with open(pdf_file_path, 'rb') as pdf_file:
+    # Create a PdfFileReader object
+    pdf_reader = PyPDF2.PdfReader(pdf_file)
 
-    with open(pdf_file_path, 'rb') as pdf_file:
-        pdf_reader = PyPDF2.PdfReader(pdf_file)
-        num_pages = len(pdf_reader.pages)
-        current_section = None
+    # Get the number of pages in the PDF
+    num_pages = len(pdf_reader.pages)
 
-        for page_num in range(num_pages):
-            page = pdf_reader.pages[page_num]
-            page_text = page.extract_text()
+    # Loop through each page and extract the text
+    full_text = ''
+    for page_num in range(num_pages):
+        # Get a specific page from the PDF
+        page = pdf_reader.pages[page_num]
 
-            if re.search(r'\bAbstract\b', page_text, re.IGNORECASE):
-                current_section = "abstract"
-            elif re.search(r'\bIntroduction\b', page_text, re.IGNORECASE):
-                current_section = "introduction"
-            elif re.search(r'\bConclusion\b', page_text, re.IGNORECASE):
-                current_section = "conclusion"
-            elif re.search(r'\bReferences\b', page_text, re.IGNORECASE):
-                current_section = "references"
+        # Extract text from the page
+        page_text = page.extract_text()
 
-            if current_section == "abstract":
-                abstract_text += page_text
-            elif current_section == "introduction":
-                introduction_text += page_text
-            elif current_section == "conclusion":
-                conclusion_text += page_text
-            elif current_section == "references":
-                references_text += page_text
+        full_text += page_text
 
-    # print("Abstract:-----------------------------------------------------\n", abstract_text)
-    # print("\nIntroduction:-----------------------------------------------------\n", introduction_text)
-    # print("\nConclusion:-------------------------------------------------------\n", conclusion_text)
-    # print("\nReferences:---------------------------------------------\n", references_text)
-    return abstract_text,introduction_text,conclusion_text
+    return(''.join(full_text.split('References')[:-1]))
+
+pdf_file_path = '/home/arjun/Documents/GitHub/Research-Paper-Assistant/paper_downloads/1706.03762.pdf'
+
+print(get_text(pdf_file_path))
