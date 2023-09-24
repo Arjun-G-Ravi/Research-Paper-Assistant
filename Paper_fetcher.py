@@ -70,6 +70,5 @@ def get_text(pdf_file_path):
 
     return(''.join(full_text.split('References')[:-1]))
 
-pdf_file_path = '/home/arjun/Documents/GitHub/Research-Paper-Assistant/paper_downloads/1706.03762.pdf'
-
-print(get_text(pdf_file_path))
+# pdf_file_path = '/home/arjun/Documents/GitHub/Research-Paper-Assistant/paper_downloads/1706.03762.pdf'
+# print(get_text(pdf_file_path))

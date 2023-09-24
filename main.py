@@ -1,6 +1,12 @@
-from Paper_fetcher import fetch_paper
+from Paper_fetcher import fetch_paper, get_text
+from model_fetcher import fetch_model
 
-arxiv_url = 'https://chat.openai.com/c/1f9952b6-062e-4e34-89fe-92518067de9d'
+
+arxiv_url = 'https://arxiv.org/abs/1706.03762'
 paper_location = fetch_paper(arxiv_url)
+paper_as_text = get_text(paper_location)
+print(paper_as_text)
+# print(len(paper_as_text))
 
-print('\n\nContinue AI part...')
+# fetch_model(paper_as_text)
+
